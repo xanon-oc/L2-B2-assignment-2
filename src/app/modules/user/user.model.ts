@@ -1,6 +1,14 @@
 import { Schema, model } from 'mongoose';
-import { TAddress, TOrders, TUser, TUserNameFullName } from './user.interface';
-
+import {
+  TAddress,
+  TOrders,
+  TUser,
+  TUserNameFullName,
+  UserModel,
+} from './user.interface';
+import bcrypt from 'bcrypt';
+import { NextFunction } from 'express';
+import config from '../../../config';
 const fullNameSchema = new Schema<TUserNameFullName>({
   firstName: { type: String },
   lastName: { type: String },
@@ -18,7 +26,7 @@ const ordersSchema = new Schema<TOrders>({
   quantity: { type: Number },
 });
 
-const UserSchema = new Schema<TUser>({
+const UserSchema = new Schema<TUser, UserModel>({
   userId: { type: Number, unique: true },
   username: { type: String, unique: true },
   password: { type: String },
@@ -32,4 +40,22 @@ const UserSchema = new Schema<TUser>({
   isDeleted: { type: Boolean },
 });
 
-export const UserModel = model<TUser>('Users', UserSchema);
+// middlewares password hashing
+UserSchema.pre('save', async function (next: NextFunction) {
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const user = this;
+  user.password = await bcrypt.hash(user.password, Number(config.salt_rounds));
+  next();
+});
+
+// checking if the user exists
+UserSchema.statics.isUserExists = async function (id: number) {
+  const existedUser = await User.findOne({ userId: id });
+  return existedUser;
+};
+UserSchema.statics.isEmailExists = async function (username: string) {
+  const existedUsername = await User.findOne({ username });
+  return existedUsername;
+};
+
+export const User = model<TUser, UserModel>('Users', UserSchema);
