@@ -3,7 +3,7 @@ import config from './config';
 
 import mongoose from 'mongoose';
 
-async function main() {
+async function server() {
   try {
     await mongoose.connect(config.databaseUrl as string);
 
@@ -14,4 +14,4 @@ async function main() {
     console.log(error);
   }
 }
-main();
+server();
