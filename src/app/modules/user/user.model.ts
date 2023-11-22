@@ -28,7 +28,8 @@ const UserSchema = new Schema<TUser>({
   isActive: { type: Boolean },
   hobbies: { type: [String] },
   address: addressSchema,
-  orders: ordersSchema,
+  orders: [ordersSchema],
+  isDeleted: { type: Boolean },
 });
 
 export const UserModel = model<TUser>('Users', UserSchema);

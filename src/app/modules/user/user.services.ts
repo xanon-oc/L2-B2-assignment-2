@@ -22,8 +22,27 @@ const retrieveASpecificUserByID = async (id: number) => {
   return result;
 };
 
+// update a user information using id
+
+const updateAUserByID = async (id: number, updatedDoc: TUser) => {
+  const result = await UserModel.updateOne(
+    { userId: id },
+    { $set: { updatedDoc } },
+  );
+  return result;
+};
+
+// delete a user
+
+const deleteUpdateAUser = async (id: number) => {
+  const result = await UserModel.updateOne({ userId: id }, { isDeleted: true });
+  return result;
+};
+
 export const userServices = {
   createAUserInDB,
   retrieveAllUsersFromDB,
   retrieveASpecificUserByID,
+  updateAUserByID,
+  deleteUpdateAUser,
 };
