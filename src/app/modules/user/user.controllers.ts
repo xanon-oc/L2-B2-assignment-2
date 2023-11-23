@@ -157,6 +157,57 @@ const addANewProductOrder = async (req: Request, res: Response) => {
   }
 };
 
+// retrieve all orders for a specific user
+
+const retrieveAllOrdersForASpecificUser = async (
+  req: Request,
+  res: Response,
+) => {
+  try {
+    const { userId } = req.params;
+    const orders = await userServices.retrieveOrdersForASpecificUserDB(
+      Number(userId),
+    );
+    res.json({
+      success: true,
+      message: 'Order fetched successfully!',
+      data: orders,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// calculate Total Price of Orders for a Specific User
+
+const calculateTotalPriceOfAUserOrder = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const result = await userServices.calculateTotalPriceOfOrdersOfAUserDB(
+      Number(userId),
+    );
+    res.status(200).json({
+      success: true,
+      message: 'Total price calculated successfully!',
+      data: {
+        totalPrice: result,
+      },
+    });
+  } catch (error: any) {
+    res.status(404).json({
+      success: false,
+      message: 'User not found',
+      error: {
+        code: 404,
+        description: error.message,
+      },
+    });
+  }
+};
+
 export const userControllers = {
   createAUser,
   gatAllUsers,
@@ -164,4 +215,6 @@ export const userControllers = {
   updateAUser,
   deleteAUser,
   addANewProductOrder,
+  retrieveAllOrdersForASpecificUser,
+  calculateTotalPriceOfAUserOrder,
 };

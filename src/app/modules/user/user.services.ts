@@ -83,12 +83,11 @@ const deleteAUser = async (id: number) => {
 
 const addNewProductsToDB = async (id: number, newOrder: TOrders) => {
   const { productName, price, quantity } = newOrder;
-
-  const user = await User.findOne({ userId: id });
   if (await User.isUserDoNotExists(id)) {
     // Handle the case where the user is not found
     throw new Error(`User with userId ${id} not found.`);
   }
+  const user = await User.findOne({ userId: id });
 
   if (user.orders) {
     // If 'orders' property exists, append the new product
@@ -103,6 +102,44 @@ const addNewProductsToDB = async (id: number, newOrder: TOrders) => {
   return result;
 };
 
+// retrieve all orders for a specific user
+
+const retrieveOrdersForASpecificUserDB = async (id: number) => {
+  if (await User.isUserDoNotExists(id)) {
+    // Handle the case where the user is not found
+    throw new Error(`User with userId ${id} not found.`);
+  }
+  const result = await User.aggregate([
+    { $match: { userId: id } },
+    { $project: { _id: 0, orders: 1 } },
+  ]);
+
+  const orders = result[0];
+
+  console.log(orders);
+
+  return orders;
+};
+
+// calculate Total Price of Orders for a Specific User
+
+const calculateTotalPriceOfOrdersOfAUserDB = async (id: number) => {
+  if (await User.isUserDoNotExists(id)) {
+    // Handle the case where the user is not found
+    throw new Error(`User with userId ${id} not found.`);
+  }
+  const result = await User.aggregate([
+    { $match: { userId: id } },
+    { $unwind: '$orders' },
+    { $group: { _id: null, totalPrice: { $sum: '$orders.price' } } },
+    { $project: { _id: 0, totalPrice: 1 } },
+  ]);
+
+  const totalPrice = result[0].totalPrice;
+
+  return totalPrice;
+};
+
 export const userServices = {
   createAUserInDB,
   retrieveAllUsersFromDB,
@@ -110,4 +147,6 @@ export const userServices = {
   updateAUserByID,
   deleteAUser,
   addNewProductsToDB,
+  retrieveOrdersForASpecificUserDB,
+  calculateTotalPriceOfOrdersOfAUserDB,
 };
