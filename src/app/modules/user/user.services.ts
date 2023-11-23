@@ -12,10 +12,12 @@ const createAUserInDB = async (userData: TUser) => {
   }
 
   const result = await User.create(userData);
-  // deleting the password before sending it to frontend
-  const userFilteredData = result.toObject();
-  delete userFilteredData.password;
-  return userFilteredData;
+
+  const resultWithoutPassword = await User.findById(result._id).select({
+    password: 0,
+  });
+
+  return resultWithoutPassword;
 };
 
 // retrieve a list of all users
@@ -62,7 +64,7 @@ const updateAUserByID = async (id: number, updatedDoc: TUser) => {
 
   const result = await User.findOneAndUpdate({ userId: id }, updatedDoc, {
     new: true,
-  });
+  }).select({ password: 0 });
 
   return result;
 };
@@ -89,15 +91,16 @@ const addNewProductsToDB = async (id: number, newOrder: TOrders) => {
   }
   const user = await User.findOne({ userId: id });
 
-  if (user.orders) {
+  if (user?.orders) {
     // If 'orders' property exists, append the new product
     user.orders.push({ productName, price, quantity });
-  } else {
+  }
+  if (user?.orders) {
     // If 'orders' property doesn't exist, create it and add the order data
     user.orders = [{ productName, price, quantity }];
   }
 
-  const result = await user.save();
+  const result = await user?.save();
 
   return result;
 };

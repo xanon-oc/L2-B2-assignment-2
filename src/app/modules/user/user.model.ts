@@ -41,8 +41,7 @@ const UserSchema = new Schema<TUser, UserModel>({
 });
 
 // middlewares password hashing
-UserSchema.pre('save', async function (next: NextFunction) {
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
+UserSchema.pre('save', async function (this: TUser, next) {
   const user = this;
   user.password = await bcrypt.hash(user.password, Number(config.salt_rounds));
   next();

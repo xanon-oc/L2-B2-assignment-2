@@ -84,14 +84,14 @@ const updateAUser = async (req: Request, res: Response) => {
       updatedDoc,
     );
 
-    const filteredData = result?.toObject();
+    // const filteredData = result?.toObject();
 
-    delete filteredData?.password;
+    // delete filteredData?.password;
 
     res.status(200).json({
       success: true,
       message: 'User updated successfully!',
-      data: filteredData,
+      data: result,
     });
   } catch (error: any) {
     res.status(404).json({
@@ -145,7 +145,7 @@ const addANewProductOrder = async (req: Request, res: Response) => {
       message: 'Order created successfully!',
       data: result,
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({
       success: false,
       message: 'User not found',
