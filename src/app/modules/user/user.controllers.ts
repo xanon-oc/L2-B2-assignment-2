@@ -16,10 +16,13 @@ const createAUser = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error: any) {
-    res.status(500).json({
+    res.status(404).json({
       success: false,
       message: 'User creation failed!',
-      data: error.message,
+      error: {
+        code: 404,
+        description: error.message,
+      },
     });
   }
 };
@@ -34,11 +37,14 @@ const gatAllUsers = async (req: Request, res: Response) => {
       message: 'Users fetched successfully!',
       data: result,
     });
-  } catch (error) {
-    res.status(500).json({
+  } catch (error: any) {
+    res.status(404).json({
       success: false,
-      message: 'User creation failed!',
-      data: error.message,
+      message: 'Failed to fetch all users!',
+      error: {
+        code: 404,
+        description: 'Failed to fetch all users!',
+      },
     });
   }
 };
@@ -55,17 +61,107 @@ const getAUserByID = async (req: Request, res: Response) => {
       message: 'User fetched successfully!',
       data: result,
     });
-  } catch (error) {
-    res.status(500).json({
+  } catch (error: any) {
+    res.status(404).json({
       success: false,
-      message: 'User fetching failed!',
-      data: error.message,
+      message: 'User not found',
+      error: {
+        code: 404,
+        description: error.message,
+      },
     });
   }
 };
 
 // update a user information using id
 
+const updateAUser = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const updatedDoc = req.body;
+    const result = await userServices.updateAUserByID(
+      Number(userId),
+      updatedDoc,
+    );
+
+    const filteredData = result?.toObject();
+
+    delete filteredData?.password;
+
+    res.status(200).json({
+      success: true,
+      message: 'User updated successfully!',
+      data: filteredData,
+    });
+  } catch (error: any) {
+    res.status(404).json({
+      success: false,
+      message: 'User not found',
+      error: {
+        code: 404,
+        description: error.message,
+      },
+    });
+  }
+};
+
 // delete a user
 
-export const userControllers = { createAUser, gatAllUsers, getAUserByID };
+const deleteAUser = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+
+    await userServices.deleteAUser(Number(userId));
+    res.status(200).json({
+      success: true,
+      message: 'User deleted successfully!',
+      data: null,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: 'User not found',
+      error: {
+        code: 404,
+        description: error.message,
+      },
+    });
+  }
+};
+
+// add order in user
+
+const addANewProductOrder = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const newOrder = req.body;
+
+    const result = await userServices.addNewProductsToDB(
+      Number(userId),
+      newOrder,
+    );
+    res.status(200).json({
+      success: true,
+      message: 'Order created successfully!',
+      data: result,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'User not found',
+      error: {
+        code: 404,
+        description: error.message,
+      },
+    });
+  }
+};
+
+export const userControllers = {
+  createAUser,
+  gatAllUsers,
+  getAUserByID,
+  updateAUser,
+  deleteAUser,
+  addANewProductOrder,
+};

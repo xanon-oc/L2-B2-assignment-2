@@ -57,5 +57,9 @@ UserSchema.statics.isEmailExists = async function (username: string) {
   const existedUsername = await User.findOne({ username });
   return existedUsername;
 };
+UserSchema.statics.isUserDoNotExists = async function (id: number) {
+  const existedUser = await User.findOne({ userId: id });
+  return existedUser === null;
+};
 
 export const User = model<TUser, UserModel>('Users', UserSchema);

@@ -1,14 +1,16 @@
-import { TUser } from './user.interface';
+import { TOrders, TUser } from './user.interface';
 import { User } from './user.model';
 
 // create a user in the DB
 
 const createAUserInDB = async (userData: TUser) => {
+  // checking if the user exists
   if (await User.isUserExists(userData.userId)) {
     throw new Error('User already Exists');
   } else if (await User.isEmailExists(userData.username)) {
     throw new Error('Username already Exists');
   }
+
   const result = await User.create(userData);
   // deleting the password before sending it to frontend
   const userFilteredData = result.toObject();
@@ -37,24 +39,66 @@ const retrieveAllUsersFromDB = async () => {
 // retrieve a specific user by ID
 
 const retrieveASpecificUserByID = async (id: number) => {
-  const result = await User.aggregate([
+  // checking if the user exists
+
+  if (await User.isUserDoNotExists(id)) {
+    throw new Error('User does not exist');
+  }
+
+  const user = await User.aggregate([
     { $match: { userId: id } },
     { $project: { password: 0, orders: 0, isDeleted: 0 } },
   ]);
-  return result;
+
+  return user;
 };
 
 // update a user information using id
 
 const updateAUserByID = async (id: number, updatedDoc: TUser) => {
-  const result = await User.updateOne({ userId: id }, { $set: { updatedDoc } });
+  if (await User.isUserDoNotExists(id)) {
+    throw new Error('User does not exist');
+  }
+
+  const result = await User.findOneAndUpdate({ userId: id }, updatedDoc, {
+    new: true,
+  });
+
   return result;
 };
 
 // delete a user
 
-const deleteUpdateAUser = async (id: number) => {
-  const result = await User.updateOne({ userId: id }, { isDeleted: true });
+const deleteAUser = async (id: number) => {
+  if (await User.isUserDoNotExists(id)) {
+    throw new Error('User does not exist');
+  }
+
+  const result = await User.deleteOne({ userId: id });
+
+  return result;
+};
+
+// adding New Product in Order
+
+const addNewProductsToDB = async (id: number, newOrder: TOrders) => {
+  const { productName, price, quantity } = newOrder;
+
+  const user = await User.findOne({ userId: id });
+  if (await User.isUserDoNotExists(id)) {
+    // Handle the case where the user is not found
+    throw new Error(`User with userId ${id} not found.`);
+  }
+
+  if (user.orders) {
+    // If 'orders' property exists, append the new product
+    user.orders.push({ productName, price, quantity });
+  } else {
+    // If 'orders' property doesn't exist, create it and add the order data
+    user.orders = [{ productName, price, quantity }];
+  }
+
+  const result = await user.save();
 
   return result;
 };
@@ -64,5 +108,6 @@ export const userServices = {
   retrieveAllUsersFromDB,
   retrieveASpecificUserByID,
   updateAUserByID,
-  deleteUpdateAUser,
+  deleteAUser,
+  addNewProductsToDB,
 };

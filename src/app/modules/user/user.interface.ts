@@ -27,11 +27,13 @@ export type TUser = {
   isActive: boolean;
   hobbies: string[];
   address: TAddress;
-  orders: TOrders[];
+  orders?: TOrders[];
   isDeleted: boolean;
 };
 
 export interface UserModel extends Model<TUser> {
   isUserExists(id: number): Promise<TUser | null>;
   isEmailExists(username: string): Promise<TUser | null>;
+
+  isUserDoNotExists(id: number): Promise<TUser | null>;
 }

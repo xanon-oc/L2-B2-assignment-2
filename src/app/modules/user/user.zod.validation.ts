@@ -27,7 +27,7 @@ const zodUserValidation = z.object({
   isActive: z.boolean().default(true),
   hobbies: z.array(z.string()),
   address: zodAddress,
-  orders: z.array(zodOrders),
+  orders: z.array(zodOrders).optional(),
   isDeleted: z.boolean().default(false),
 });
 
