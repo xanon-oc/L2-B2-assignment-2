@@ -79,11 +79,3 @@ npm start
   ```bash
   npm run prettier:fix
   ```
-
-## Testing
-
-To run tests (if available), use:
-
-```bash
-npm test
-```
