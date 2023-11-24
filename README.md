@@ -1,6 +1,10 @@
 ````markdown
 # L2-B2-assignment-2
 
+# Repository Link - https://github.com/xanon-oc/L2-B2-assignment-2.git
+
+# Live Link - https://easy-blue-jay.cyclic.app/
+
 ## Description
 
 This repository contains a Node.js application built with Mongoose and TypeScript.
