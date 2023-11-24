@@ -1,7 +1,5 @@
-Certainly! Here's a sample README file with clear instructions on how to run the application locally:
-
 ````markdown
-# Startup Mongoose Template
+# L2-B2-assignment-2
 
 ## Description
 
