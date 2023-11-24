@@ -83,11 +83,6 @@ const updateAUser = async (req: Request, res: Response) => {
       Number(userId),
       updatedDoc,
     );
-
-    // const filteredData = result?.toObject();
-
-    // delete filteredData?.password;
-
     res.status(200).json({
       success: true,
       message: 'User updated successfully!',
