@@ -3,30 +3,32 @@
 
 ## Description
 
-This is a Node.js application using Mongoose and TypeScript.
+This repository contains a Node.js application built with Mongoose and TypeScript.
 
 ## Installation
 
-1. Clone the repository:
+1. **Clone the repository:**
 
    ```bash
    git clone https://github.com/xanon-oc/L2-B2-assignment-2.git
    ```
 ````
 
-2. Navigate to the project directory:
+2. **Navigate to the project directory:**
 
    ```bash
-   cd l2_b2_assignment-2
+   cd L2-B2-assignment-2
    ```
 
-3. Install dependencies:
+3. **Install dependencies:**
 
    ```bash
    npm install
    ```
 
-4. Create a `.env` file in the root directory and add the necessary environment variables.
+4. **Create a `.env` file:**
+
+   Create a `.env` file in the root directory and add the necessary environment variables.
 
 ## Running the Application
 
@@ -56,26 +58,30 @@ npm start
 
 ## Linting and Formatting
 
-- Run ESLint for linting:
+- **Run ESLint for linting:**
 
   ```bash
   npm run lint
   ```
 
-- Run ESLint with auto-fix for linting:
+- **Run ESLint with auto-fix for linting:**
 
   ```bash
   npm run lint:fix
   ```
 
-- Run Prettier for code formatting:
+- **Run Prettier for code formatting:**
 
   ```bash
   npm run prettier
   ```
 
-- Run Prettier with auto-fix for code formatting:
+- **Run Prettier with auto-fix for code formatting:**
 
   ```bash
   npm run prettier:fix
   ```
+
+```
+
+```
