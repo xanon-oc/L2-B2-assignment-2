@@ -81,7 +81,3 @@ npm start
   ```bash
   npm run prettier:fix
   ```
-
-```
-
-```
