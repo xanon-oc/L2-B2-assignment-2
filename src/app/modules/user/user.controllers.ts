@@ -1,14 +1,15 @@
 import { Request, Response } from 'express';
 import { userServices } from './user.services';
-import zodUserValidation from './user.zod.validation';
+import { zodValidation } from './user.zod.validation';
 
 // create a user in the DB
 
 const createAUser = async (req: Request, res: Response) => {
   try {
-    const { userData } = req.body;
     //zod validation
-    const userZodValidatedData = await zodUserValidation.parse(userData);
+    const userZodValidatedData = await zodValidation.zodUserValidation.parse(
+      req.body,
+    );
     const result = await userServices.createAUserInDB(userZodValidatedData);
     res.status(200).json({
       success: true,
@@ -78,10 +79,11 @@ const getAUserByID = async (req: Request, res: Response) => {
 const updateAUser = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const updatedDoc = req.body;
+    const userZodValidatedData =
+      await zodValidation.updateZodUserValidation.parse(req.body);
     const result = await userServices.updateAUserByID(
       Number(userId),
-      updatedDoc,
+      userZodValidatedData,
     );
     res.status(200).json({
       success: true,

@@ -61,7 +61,7 @@ const retrieveASpecificUserByID = async (id: number) => {
 
 // update a user information using id
 
-const updateAUserByID = async (id: number, updatedDoc: TUser) => {
+const updateAUserByID = async (id: number, updatedDoc: Partial<TUser>) => {
   if (await User.isUserDoNotExists(id)) {
     throw new Error('User does not exist');
   }
@@ -123,8 +123,6 @@ const retrieveOrdersForASpecificUserDB = async (id: number) => {
   ]);
 
   const orders = result[0];
-
-  console.log(orders);
 
   return orders;
 };
